@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scraper HTML/CSS - NerooXF</title>
+    <title>HTML/CSS Scraper - NerooXF</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Reset dan variabel CSS */
@@ -64,6 +64,19 @@
             background-size: 50px 50px;
         }
         
+        .theme-night .moon,
+        .theme-night .star {
+            display: block;
+        }
+        
+        .theme-night .sun,
+        .theme-night .leaf,
+        .theme-night .cloud,
+        .theme-night .raindrop,
+        .theme-night .puddle {
+            display: none;
+        }
+        
         .moon {
             position: absolute;
             top: 15%;
@@ -74,6 +87,7 @@
             border-radius: 50%;
             box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
             animation: float 8s ease-in-out infinite;
+            display: none;
         }
         
         .star {
@@ -81,6 +95,7 @@
             background-color: white;
             border-radius: 50%;
             animation: twinkle 4s infinite;
+            display: none;
         }
         
         /* Tema matahari terbenam */
@@ -95,6 +110,19 @@
             background-size: 80px 80px;
         }
         
+        .theme-sunset .sun,
+        .theme-sunset .leaf {
+            display: block;
+        }
+        
+        .theme-sunset .moon,
+        .theme-sunset .star,
+        .theme-sunset .cloud,
+        .theme-sunset .raindrop,
+        .theme-sunset .puddle {
+            display: none;
+        }
+        
         .sun {
             position: absolute;
             bottom: 0;
@@ -104,6 +132,7 @@
             background: radial-gradient(circle, #ff9d00, #ff2e00);
             border-radius: 50%;
             animation: sunset 20s linear infinite;
+            display: none;
         }
         
         .leaf {
@@ -113,6 +142,7 @@
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%233e8e41" d="M50,5 C70,5 90,25 90,50 C70,70 50,90 30,70 C10,50 30,25 50,5 Z"/></svg>');
             background-size: contain;
             animation: falling 15s linear infinite;
+            display: none;
         }
         
         /* Tema hujan */
@@ -127,12 +157,26 @@
             background-size: 120px 120px;
         }
         
+        .theme-rain .cloud,
+        .theme-rain .raindrop,
+        .theme-rain .puddle {
+            display: block;
+        }
+        
+        .theme-rain .moon,
+        .theme-rain .star,
+        .theme-rain .sun,
+        .theme-rain .leaf {
+            display: none;
+        }
+        
         .cloud {
             position: absolute;
             background: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             filter: blur(10px);
             animation: drift 30s linear infinite;
+            display: none;
         }
         
         .raindrop {
@@ -140,6 +184,7 @@
             width: 2px;
             background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
             animation: rain 1.5s linear infinite;
+            display: none;
         }
         
         .puddle {
@@ -150,6 +195,7 @@
             background: rgba(173, 216, 230, 0.5);
             border-radius: 50%;
             animation: ripple 3s infinite;
+            display: none;
         }
         
         /* Animasi keyframes */
@@ -231,19 +277,31 @@
         header {
             text-align: center;
             margin-bottom: 50px;
+            position: relative;
         }
         
-        header h1 {
+        .tool-description {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow);
+        }
+        
+        .tool-description h1 {
             font-size: 2.8rem;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
-        header p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto;
+        .tool-description p {
+            font-size: 1.1rem;
+            line-height: 1.7;
             opacity: 0.9;
+            margin-bottom: 15px;
         }
         
         /* Form scraper */
@@ -363,36 +421,55 @@
             transition: var(--transition);
         }
         
-        /* Profil section */
-        .profile-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .output-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 40px 20px;
+            font-size: 1.1rem;
         }
         
-        .profile-header {
+        /* Profil section */
+        .profile-section {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        
+        .profile-banner {
+            height: 180px;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            position: relative;
             display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
+            justify-content: center;
+            border-bottom: 4px solid rgba(255, 255, 255, 0.2);
         }
         
         .profile-pic {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: var(--radius-full);
             overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.2);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             box-shadow: var(--shadow);
+            position: absolute;
+            bottom: -70px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
         }
         
         .profile-pic img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        .profile-content {
+            padding: 90px 30px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         
         .profile-info h2 {
@@ -403,31 +480,38 @@
         .profile-info p {
             font-size: 1.1rem;
             opacity: 0.9;
+            margin-bottom: 25px;
         }
         
         .contact-info {
             display: flex;
+            justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
         }
         
-        .contact-item {
-            display: flex;
+        .contact-btn {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 20px;
+            padding: 12px 25px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: var(--radius-sm);
             transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
         }
         
-        .contact-item:hover {
+        .contact-btn:hover {
             background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
         
-        .contact-item i {
-            font-size: 1.5rem;
+        .contact-btn i {
+            font-size: 1.4rem;
         }
         
         /* Responsif */
@@ -436,7 +520,7 @@
                 padding: 80px 15px 30px;
             }
             
-            header h1 {
+            .tool-description h1 {
                 font-size: 2.2rem;
             }
             
@@ -444,13 +528,9 @@
                 flex-direction: column;
             }
             
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
             .contact-info {
                 flex-direction: column;
+                align-items: center;
             }
             
             .theme-toggle {
@@ -458,6 +538,20 @@
                 right: 15px;
                 width: 50px;
                 height: 50px;
+            }
+            
+            .profile-banner {
+                height: 150px;
+            }
+            
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+                bottom: -60px;
+            }
+            
+            .profile-content {
+                padding-top: 70px;
             }
         }
     </style>
@@ -484,8 +578,11 @@
     
     <div class="container">
         <header>
-            <h1>HTML/CSS Scraper</h1>
-            <p>Ekstrak konten HTML dan CSS dari website apapun dengan mudah</p>
+            <div class="tool-description">
+                <h1>HTML/CSS Scraper</h1>
+                <p>Alat ini memungkinkan Anda untuk mengekstrak konten HTML dan CSS dari website apapun dengan mudah. Cukup masukkan URL website yang ingin Anda scrap, klik tombol "Mulai Scraping", dan hasilnya akan ditampilkan di area output.</p>
+                <p>Anda dapat menyalin hasil scraping ke clipboard, mendownloadnya sebagai file teks, atau menghapus hasil dengan tombol yang disediakan.</p>
+            </div>
         </header>
         
         <section class="scraper-form">
@@ -513,29 +610,33 @@
                 </div>
             </div>
             <div class="output-content" id="scrapingOutput">
-                {/* Hasil scraping akan muncul di sini */}
+                <div class="output-placeholder">
+                    <i class="fas fa-code" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <p>Hasil scraping akan muncul di sini setelah Anda memasukkan URL dan menekan tombol "Mulai Scraping"</p>
+                </div>
             </div>
         </section>
         
         <section class="profile-section">
-            <div class="profile-header">
-                <div class="profile-pic">
-                    <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF">
-                </div>
+            <div class="profile-banner"></div>
+            <div class="profile-pic">
+                <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF">
+            </div>
+            <div class="profile-content">
                 <div class="profile-info">
                     <h2>NerooXF</h2>
                     <p>Basic Developer</p>
                 </div>
-            </div>
-            <div class="contact-info">
-                <a href="https://wa.me/6282118471887" class="contact-item" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>WhatsApp: +62 821-1847-1887</span>
-                </a>
-                <a href="https://t.me/nerooXF" class="contact-item" target="_blank">
-                    <i class="fab fa-telegram"></i>
-                    <span>Telegram: @nerooXF</span>
-                </a>
+                <div class="contact-info">
+                    <a href="https://wa.me/6282118471887" class="contact-btn" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://t.me/nerooXF" class="contact-btn" target="_blank">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                </div>
             </div>
         </section>
     </div>
@@ -551,6 +652,7 @@
         const themeIcon = themeToggle.querySelector('i');
         const body = document.body;
         const backgroundAnimation = document.querySelector('.background-animation');
+        const outputContent = document.getElementById('scrapingOutput');
         
         // Initialize background elements
         function initBackgroundElements() {
@@ -643,7 +745,6 @@
         // Scraping functions
         function startScraping() {
             const urlInput = document.getElementById('websiteUrl');
-            const output = document.getElementById('scrapingOutput');
             
             if (!urlInput.value) {
                 alert('Silakan masukkan URL website terlebih dahulu');
@@ -651,12 +752,12 @@
                 return;
             }
             
-            // Simulate scraping process
-            output.textContent = 'Memulai proses scraping...';
+            // Remove placeholder
+            outputContent.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i><p style="margin-top: 15px;">Memproses scraping, harap tunggu...</p></div>';
             
             setTimeout(() => {
                 // This is a simulation - actual scraping would require a backend
-                output.textContent = `Hasil scraping dari: ${urlInput.value}\n\n`
+                const content = `Hasil scraping dari: ${urlInput.value}\n\n`
                     + 'HTML:\n'
                     + '<!DOCTYPE html>\n<html>\n<head>\n  <title>Contoh Website</title>\n</head>\n<body>\n'
                     + '  <h1>Halo, Scraper!</h1>\n  <p>Ini adalah contoh hasil scraping.</p>\n'
@@ -665,13 +766,18 @@
                     + 'body { font-family: Arial, sans-serif; margin: 20px; }\n'
                     + 'h1 { color: #4361ee; }\n'
                     + 'p { color: #333; line-height: 1.6; }';
-            }, 1500);
+                
+                outputContent.textContent = content;
+            }, 2000);
         }
         
         function copyOutput() {
-            const output = document.getElementById('scrapingOutput');
+            if (!outputContent.textContent || outputContent.textContent.includes('Memproses scraping')) {
+                return;
+            }
+            
             const textarea = document.createElement('textarea');
-            textarea.value = output.textContent;
+            textarea.value = outputContent.textContent;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
@@ -687,8 +793,11 @@
         }
         
         function downloadOutput() {
-            const output = document.getElementById('scrapingOutput');
-            const blob = new Blob([output.textContent], {type: 'text/plain'});
+            if (!outputContent.textContent || outputContent.textContent.includes('Memproses scraping')) {
+                return;
+            }
+            
+            const blob = new Blob([outputContent.textContent], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -700,7 +809,10 @@
         }
         
         function clearOutput() {
-            document.getElementById('scrapingOutput').textContent = '';
+            outputContent.innerHTML = '<div class="output-placeholder">'
+                + '<i class="fas fa-code" style="font-size: 3rem; margin-bottom: 15px;"></i>'
+                + '<p>Hasil scraping akan muncul di sini setelah Anda memasukkan URL dan menekan tombol "Mulai Scraping"</p>'
+                + '</div>';
         }
         
         // Initialize the page
@@ -717,16 +829,6 @@
             document.getElementById('copyOutput').addEventListener('click', copyOutput);
             document.getElementById('downloadOutput').addEventListener('click', downloadOutput);
             document.getElementById('clearOutput').addEventListener('click', clearOutput);
-            
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
         });
     </script>
 </body>
