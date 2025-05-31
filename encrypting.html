@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NerooXF Encryption Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variabel Global */
+        :root {
+            --primary: #3498db;
+            --secondary: #5dade2;
+            --accent: #ff9a8b;
+            --background: #f8f9ff;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+            --border: #e0e7ff;
+            --shadow: rgba(52, 152, 219, 0.15);
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --transition: all 0.5s ease;
+        }
+
+        /* Tema Langit Malam */
+        .theme-night {
+            --primary: #8e44ad;
+            --secondary: #9b59b6;
+            --accent: #3498db;
+            --background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --text: #ecf0f1;
+            --card-bg: rgba(30, 30, 60, 0.7);
+            --border: rgba(142, 68, 173, 0.3);
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Tema Hujan */
+        .theme-rain {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --accent: #27ae60;
+            --background: linear-gradient(135deg, #2c3e50, #4a6491, #2c3e50);
+            --text: #ecf0f1;
+            --card-bg: rgba(44, 62, 80, 0.7);
+            --border: rgba(52, 152, 219, 0.3);
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Tema Matahari Terbenam */
+        .theme-sunset {
+            --primary: #e74c3c;
+            --secondary: #e67e22;
+            --accent: #f1c40f;
+            --background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            --text: #f5f5f5;
+            --card-bg: rgba(154, 89, 45, 0.7);
+            --border: rgba(231, 76, 60, 0.3);
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Animasi Umum */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Animasi Tema */
+        @keyframes star-twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes rain-drop {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes leaf-float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(20deg); }
+        }
+
+        /* Styling Dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .theme-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px white;
+        }
+
+        .theme-night-btn { background: linear-gradient(135deg, #8e44ad, #3498db); }
+        .theme-rain-btn { background: linear-gradient(135deg, #3498db, #2c3e50); }
+        .theme-sunset-btn { background: linear-gradient(135deg, #e74c3c, #fdbb2d); }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Penjelasan Encrypting */
+        .explanation {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .explanation h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .explanation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+        }
+
+        .info-card h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .info-card p {
+            line-height: 1.7;
+        }
+
+        /* Form Encrypting */
+        .encryption-form {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1.4s ease-out;
+            margin-bottom: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .lang-btn {
+            padding: 12px 25px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .level-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .level-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .level-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .level-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .level-lower { background: linear-gradient(90deg, #2ecc71, #27ae60); color: white; }
+        .level-medium { background: linear-gradient(90deg, #3498db, #2980b9); color: white; }
+        .level-hard { background: linear-gradient(90deg, #f39c12, #e67e22); color: white; }
+        .level-extreme { background: linear-gradient(90deg, #e74c3c, #c0392b); color: white; }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            background: var(--border);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .file-upload {
+            margin-bottom: 20px;
+        }
+
+        .file-upload input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 16px;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        /* Hasil Encrypting */
+        .result-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1.6s ease-out;
+            margin-bottom: 40px;
+        }
+
+        .result-container h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        #resultText {
+            height: 250px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Profil */
+        .profile-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1.8s ease-out;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--primary);
+            box-shadow: 0 10px 30px var(--shadow);
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .profile-title {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            padding: 15px 25px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .contact-item:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+            color: white;
+        }
+
+        /* Elemen Tema */
+        .theme-element {
+            position: absolute;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Tema Night */
+        .theme-night .star {
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            animation: star-twinkle 3s infinite;
+        }
+
+        .theme-night .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(90deg, 
+                rgba(142, 68, 173, 0.2), 
+                rgba(52, 152, 219, 0.2), 
+                rgba(46, 204, 113, 0.2));
+            opacity: 0.5;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
+            animation: aurora 15s infinite alternate;
+        }
+
+        /* Tema Rain */
+        .theme-rain .rain-drop {
+            width: 2px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            position: absolute;
+            animation: rain-drop 2s infinite linear;
+        }
+
+        .theme-rain .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        /* Tema Sunset */
+        .theme-sunset .leaf {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(231, 76, 60, 0.7);
+            animation: leaf-float 10s infinite ease-in-out;
+        }
+
+        .theme-sunset .sun {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #fdbb2d, transparent 70%);
+            border-radius: 50%;
+            top: 50px;
+            right: 100px;
+            animation: pulse 8s infinite;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .theme-switcher {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .theme-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .contact-methods {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="theme-night">
+    <!-- Elemen Tema -->
+    <div class="theme-elements">
+        <!-- Tema Night -->
+        <div class="aurora"></div>
+        <div class="star" style="top: 15%; left: 10%; animation-delay: 0s;"></div>
+        <div class="star" style="top: 25%; left: 30%; animation-delay: 1s;"></div>
+        <div class="star" style="top: 10%; left: 70%; animation-delay: 2s;"></div>
+        <div class="star" style="top: 40%; left: 50%; animation-delay: 0.5s;"></div>
+        <div class="star" style="top: 35%; left: 85%; animation-delay: 1.5s;"></div>
+        
+        <!-- Tema Rain (akan ditampilkan saat tema rain aktif) -->
+        <div class="rain-drop" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="rain-drop" style="left: 15%; animation-delay: 0.2s;"></div>
+        <div class="rain-drop" style="left: 25%; animation-delay: 0.7s;"></div>
+        <div class="rain-drop" style="left: 35%; animation-delay: 0.4s;"></div>
+        <div class="rain-drop" style="left: 45%; animation-delay: 0.1s;"></div>
+        <div class="rain-drop" style="left: 55%; animation-delay: 0.6s;"></div>
+        <div class="rain-drop" style="left: 65%; animation-delay: 0.3s;"></div>
+        <div class="rain-drop" style="left: 75%; animation-delay: 0.8s;"></div>
+        <div class="rain-drop" style="left: 85%; animation-delay: 0.5s;"></div>
+        <div class="rain-drop" style="left: 95%; animation-delay: 0.9s;"></div>
+        
+        <!-- Tema Sunset (akan ditampilkan saat tema sunset aktif) -->
+        <div class="leaf" style="top: 20%; left: 5%; animation-delay: 0s;">🍃</div>
+        <div class="leaf" style="top: 30%; left: 25%; animation-delay: 2s;">🍂</div>
+        <div class="leaf" style="top: 15%; left: 45%; animation-delay: 4s;">🍁</div>
+        <div class="leaf" style="top: 25%; left: 65%; animation-delay: 1s;">🍃</div>
+        <div class="leaf" style="top: 10%; left: 85%; animation-delay: 3s;">🍂</div>
+        <div class="sun"></div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <button class="theme-btn theme-night-btn active" data-theme="night">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="theme-btn theme-rain-btn" data-theme="rain">
+            <i class="fas fa-cloud-rain"></i>
+        </button>
+        <button class="theme-btn theme-sunset-btn" data-theme="sunset">
+            <i class="fas fa-sun"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>NerooXF Encryption Tool</h1>
+            <p>Alat enkripsi multi-bahasa dengan berbagai tingkat keamanan dan tema visual yang memukau</p>
+        </header>
+
+        <!-- Penjelasan Encrypting -->
+        <section class="explanation">
+            <h2><i class="fas fa-lock"></i> Apa Itu Encrypting?</h2>
+            <p>Encrypting (enkripsi) adalah proses mengubah informasi menjadi bentuk yang tidak dapat dipahami oleh pihak yang tidak berwenang. Dalam konteks kode pemrograman, enkripsi digunakan untuk melindungi kode sumber dari pembacaan, modifikasi, atau pencurian oleh pihak yang tidak diinginkan.</p>
+            
+            <div class="explanation-content">
+                <div class="info-card">
+                    <h3><i class="fas fa-shield-alt"></i> Keamanan Kode</h3>
+                    <p>Enkripsi kode melindungi hak kekayaan intelektual dengan menyembunyikan logika bisnis penting dan algoritma sensitif dari pengguna atau kompetitor.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-bug"></i> Pencegahan Reverse Engineering</h3>
+                    <p>Dengan mengubah kode menjadi bentuk yang sulit dipahami, enkripsi mempersulit proses reverse engineering yang dapat membongkar cara kerja aplikasi.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-user-secret"></i> Perlindungan Data</h3>
+                    <p>Kode yang dienkripsi melindungi data sensitif seperti kredensial API, metode autentikasi, dan informasi sensitif lainnya yang mungkin terdapat dalam kode.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Encrypting -->
+        <section class="encryption-form">
+            <div class="form-section">
+                <h3><i class="fas fa-globe"></i> Pilih Bahasa</h3>
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="html">
+                        <i class="fab fa-html5"></i> HTML
+                    </button>
+                    <button class="lang-btn" data-lang="css">
+                        <i class="fab fa-css3-alt"></i> CSS
+                    </button>
+                    <button class="lang-btn" data-lang="js">
+                        <i class="fab fa-js"></i> JavaScript
+                    </button>
+                    <button class="lang-btn" data-lang="python">
+                        <i class="fab fa-python"></i> Python
+                    </button>
+                    <button class="lang-btn" data-lang="php">
+                        <i class="fab fa-php"></i> PHP
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-sliders-h"></i> Tingkat Enkripsi</h3>
+                <p>Pilih tingkat enkripsi sesuai kebutuhan. Tingkat yang lebih tinggi memberikan keamanan lebih baik tetapi berpotensi meningkatkan error.</p>
+                
+                <div class="level-selector">
+                    <button class="level-btn level-lower active" data-level="lower">Lower (Rendah)</button>
+                    <button class="level-btn level-medium" data-level="medium">Medium (Menengah)</button>
+                    <button class="level-btn level-hard" data-level="hard">Hard (Tinggi)</button>
+                    <button class="level-btn level-extreme" data-level="extreme">Extreme (Sangat Tinggi)</button>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3><i class="fas fa-code"></i> Masukkan Kode</h3>
+                <div class="input-methods">
+                    <button class="input-btn" id="pasteBtn">
+                        <i class="fas fa-paste"></i> Tempel Kode
+                    </button>
+                    <button class="input-btn" id="clearInputBtn">
+                        <i class="fas fa-broom"></i> Bersihkan
+                    </button>
+                </div>
+                
+                <div class="file-upload">
+                    <input type="file" id="codeFile" accept=".html,.css,.js,.py,.php">
+                </div>
+                
+                <div class="input-area">
+                    <textarea id="inputCode" placeholder="Masukkan kode Anda di sini atau upload file..."></textarea>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="encryptBtn">
+                    <i class="fas fa-lock"></i> Enkripsi Sekarang
+                </button>
+            </div>
+        </section>
+
+        <!-- Hasil Encrypting -->
+        <section class="result-container">
+            <h3><i class="fas fa-key"></i> Hasil Enkripsi</h3>
+            <textarea id="resultText" placeholder="Hasil enkripsi akan muncul di sini..." readonly></textarea>
+            
+            <div class="result-actions">
+                <button class="btn btn-secondary" id="copyBtn">
+                    <i class="fas fa-copy"></i> Salin Hasil
+                </button>
+                <button class="btn btn-secondary" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn btn-secondary" id="clearResultBtn">
+                    <i class="fas fa-trash"></i> Bersihkan
+                </button>
+            </div>
+        </section>
+
+        <!-- Profil -->
+        <section class="profile-section">
+            <div class="profile-header">
+                <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF" class="profile-pic">
+                <h2 class="profile-name">NerooXF</h2>
+                <p class="profile-title">Basic Developer</p>
+            </div>
+            
+            <div class="contact-methods">
+                <a href="https://wa.me/6282118471887" class="contact-item" target="_blank">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://t.me/NerooXF" class="contact-item" target="_blank">
+                    <i class="fab fa-telegram"></i> Telegram
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Fungsi tema
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const body = document.body;
+        
+        themeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                
+                // Hapus semua kelas tema
+                body.classList.remove('theme-night', 'theme-rain', 'theme-sunset');
+                
+                // Tambahkan kelas tema yang dipilih
+                body.classList.add(`theme-${theme}`);
+                
+                // Update tombol aktif
+                themeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Animasi tombol
+                btn.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+        
+        // Fungsi bahasa
+        const langBtns = document.querySelectorAll('.lang-btn');
+        
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                langBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Animasi tombol
+                btn.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    btn.style.transform = 'translateY(0)';
+                }, 300);
+            });
+        });
+        
+        // Fungsi tingkat enkripsi
+        const levelBtns = document.querySelectorAll('.level-btn');
+        
+        levelBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                levelBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Animasi tombol
+                btn.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+        
+        // Fungsi paste
+        document.getElementById('pasteBtn').addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('inputCode').value = text;
+                
+                // Animasi sukses
+                const btn = document.getElementById('pasteBtn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Berhasil!';
+                btn.style.background = 'var(--success)';
+                btn.style.color = 'white';
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-paste"></i> Tempel Kode';
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            } catch (err) {
+                alert('Gagal menempelkan kode. Pastikan Anda memberikan izin akses clipboard.');
+            }
+        });
+        
+        // Fungsi bersihkan input
+        document.getElementById('clearInputBtn').addEventListener('click', () => {
+            document.getElementById('inputCode').value = '';
+            document.getElementById('codeFile').value = '';
+            
+            // Animasi tombol
+            const btn = document.getElementById('clearInputBtn');
+            btn.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 300);
+        });
+        
+        // Fungsi enkripsi
+        document.getElementById('encryptBtn').addEventListener('click', () => {
+            const inputCode = document.getElementById('inputCode').value;
+            const resultText = document.getElementById('resultText');
+            
+            if (!inputCode.trim()) {
+                alert('Masukkan kode terlebih dahulu!');
+                return;
+            }
+            
+            const activeLang = document.querySelector('.lang-btn.active').dataset.lang;
+            const activeLevel = document.querySelector('.level-btn.active').dataset.level;
+            
+            // Animasi tombol
+            const btn = document.getElementById('encryptBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            btn.disabled = true;
+            
+            // Simulasi proses enkripsi
+            setTimeout(() => {
+                // Hasil simulasi enkripsi
+                resultText.value = encryptCode(inputCode, activeLang, activeLevel);
+                
+                // Kembalikan tombol ke semula
+                btn.innerHTML = '<i class="fas fa-lock"></i> Enkripsi Sekarang';
+                btn.disabled = false;
+                
+                // Animasi sukses
+                btn.style.background = 'var(--success)';
+                setTimeout(() => {
+                    btn.style.background = '';
+                }, 1000);
+            }, 1500);
+        });
+        
+        // Fungsi salin hasil
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const resultText = document.getElementById('resultText');
+            
+            if (!resultText.value.trim()) {
+                alert('Tidak ada hasil untuk disalin!');
+                return;
+            }
+            
+            resultText.select();
+            document.execCommand('copy');
+            
+            // Animasi tombol
+            const btn = document.getElementById('copyBtn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+            btn.style.background = 'var(--success)';
+            btn.style.color = 'white';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-copy"></i> Salin Hasil';
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 2000);
+        });
+        
+        // Fungsi download
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const resultText = document.getElementById('resultText');
+            
+            if (!resultText.value.trim()) {
+                alert('Tidak ada hasil untuk didownload!');
+                return;
+            }
+            
+            const activeLang = document.querySelector('.lang-btn.active').dataset.lang;
+            const blob = new Blob([resultText.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = `encrypted_code.${activeLang}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Animasi tombol
+            const btn = document.getElementById('downloadBtn');
+            btn.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 300);
+        });
+        
+        // Fungsi bersihkan hasil
+        document.getElementById('clearResultBtn').addEventListener('click', () => {
+            document.getElementById('resultText').value = '';
+            
+            // Animasi tombol
+            const btn = document.getElementById('clearResultBtn');
+            btn.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 300);
+        });
+        
+        // Fungsi enkripsi simulasi
+        function encryptCode(code, lang, level) {
+            // Daftar teknik enkripsi berdasarkan tingkat
+            const techniques = {
+                lower: [
+                    "Mengganti nama variabel",
+                    "Mengubah struktur string",
+                    "Enkripsi dasar"
+                ],
+                medium: [
+                    "Mengenkripsi string dengan Base64",
+                    "Mengubah nama fungsi",
+                    "Mengacak struktur kontrol",
+                    "Menambahkan kode redundan"
+                ],
+                hard: [
+                    "Enkripsi AES",
+                    "Transformasi AST",
+                    "Kontrol aliran datar",
+                    "Pengacakan identifier",
+                    "Enkripsi string lanjutan"
+                ],
+                extreme: [
+                    "Enkripsi kustom tingkat tinggi",
+                    "Virtualisasi kode",
+                    "Transformasi polimorfik",
+                    "Enkripsi multi-layer",
+                    "Penambalan anti-debug",
+                    "Pengacakan metaprogramming"
+                ]
+            };
+            
+            // Pilih teknik berdasarkan level
+            const selectedTechniques = techniques[level];
+            
+            // Header hasil
+            let result = `/*\n`;
+            result += ` * NerooXF Encryption Tool\n`;
+            result += ` * Bahasa: ${lang.toUpperCase()}\n`;
+            result += ` * Tingkat: ${level.toUpperCase()}\n`;
+            result += ` * Teknik:\n`;
+            
+            selectedTechniques.forEach(tech => {
+                result += ` *   - ${tech}\n`;
+            });
+            
+            result += ` */\n\n`;
+            
+            // Simulasi enkripsi berdasarkan bahasa
+            switch(lang) {
+                case 'html':
+                    result += `<!-- Kode HTML Terenkripsi -->\n`;
+                    result += `<div class="encrypted">${btoa(code).slice(0, 100)}...</div>`;
+                    break;
+                case 'css':
+                    result += `/* CSS Terenkripsi */\n`;
+                    result += `.encrypted::before { content: "${btoa(code).slice(0, 50)}"; }`;
+                    break;
+                case 'js':
+                    result += `// JavaScript Terenkripsi\n`;
+                    result += `(function(){${btoa(code)}})();`;
+                    break;
+                case 'python':
+                    result += `# Python Terenkripsi\n`;
+                    result += `import base64; exec(base64.b64decode("${btoa(code)}"))`;
+                    break;
+                case 'php':
+                    result += `<?php /* PHP Terenkripsi */ ?>\n`;
+                    result += `eval(base64_decode('${btoa(code)}'));`;
+                    break;
+                default:
+                    result += code;
+            }
+            
+            // Tambahkan warning untuk tingkat extreme
+            if (level === 'extreme') {
+                result += `\n\n/*\n * PERINGATAN: Tingkat enkripsi EXTREME\n`;
+                result += ` * Mungkin menyebabkan error runtime dan ketidakstabilan\n`;
+                result += ` * Gunakan hanya untuk kode yang sangat sensitif\n */`;
+            }
+            
+            return result;
+        }
+        
+        // Handle file upload
+        document.getElementById('codeFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('inputCode').value = e.target.result;
+            };
+            reader.readAsText(file);
+        });
+        
+        // Generate stars for night theme
+        function generateStars() {
+            const container = document.querySelector('.theme-elements');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(star);
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            generateStars();
+        });
+    </script>
+</body>
+</html>
