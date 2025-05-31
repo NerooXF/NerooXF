@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraper HTML/CSS - NerooXF</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset dan variabel CSS */
+        :root {
+            /* Warna dasar */
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            
+            /* Transisi */
+            --transition: all 0.4s ease;
+            
+            /* Shadow */
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+            
+            /* Radius */
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-full: 50%;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        /* Animasi latar belakang untuk tema */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        /* Tema langit malam */
+        .theme-night {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #e0e0ff;
+        }
+        
+        .theme-night .background-animation {
+            background: radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                        radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .moon {
+            position: absolute;
+            top: 15%;
+            right: 15%;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+        
+        /* Tema matahari terbenam */
+        .theme-sunset {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b, #ffd26f);
+            color: #2c1909;
+        }
+        
+        .theme-sunset .background-animation {
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+        
+        .sun {
+            position: absolute;
+            bottom: 0;
+            right: 15%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #ff9d00, #ff2e00);
+            border-radius: 50%;
+            animation: sunset 20s linear infinite;
+        }
+        
+        .leaf {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%233e8e41" d="M50,5 C70,5 90,25 90,50 C70,70 50,90 30,70 C10,50 30,25 50,5 Z"/></svg>');
+            background-size: contain;
+            animation: falling 15s linear infinite;
+        }
+        
+        /* Tema hujan */
+        .theme-rain {
+            background: linear-gradient(135deg, #2c3e50, #4a6491, #7c98b3);
+            color: #e0f7ff;
+        }
+        
+        .theme-rain .background-animation {
+            background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                        radial-gradient(circle at 10% 60%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 120px 120px;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(10px);
+            animation: drift 30s linear infinite;
+        }
+        
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
+            animation: rain 1.5s linear infinite;
+        }
+        
+        .puddle {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 10px;
+            background: rgba(173, 216, 230, 0.5);
+            border-radius: 50%;
+            animation: ripple 3s infinite;
+        }
+        
+        /* Animasi keyframes */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes sunset {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+        
+        @keyframes falling {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        @keyframes rain {
+            0% { transform: translateY(-100px); opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        @keyframes drift {
+            0% { transform: translateX(-10%); }
+            100% { transform: translateX(110%); }
+        }
+        
+        /* Tombol tema */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(30deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .theme-toggle i {
+            font-size: 24px;
+            transition: var(--transition);
+        }
+        
+        /* Layout konten utama */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Form scraper */
+        .scraper-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.15);
+            color: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            background: var(--secondary);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn i {
+            font-size: 1.2rem;
+        }
+        
+        .btn-start {
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 18px;
+        }
+        
+        /* Output area */
+        .output-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .output-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .output-actions .btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .output-content {
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+        
+        /* Profil section */
+        .profile-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow);
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .contact-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .contact-item i {
+            font-size: 1.5rem;
+        }
+        
+        /* Responsif */
+        @media (max-width: 768px) {
+            .container {
+                padding: 80px 15px 30px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body class="theme-night">
+    <!-- Background animation elements -->
+    <div class="background-animation">
+        <!-- Elements for night theme -->
+        <div class="moon"></div>
+        <!-- Stars will be generated by JS -->
+        
+        <!-- Elements for sunset theme -->
+        <div class="sun"></div>
+        <!-- Leaves will be generated by JS -->
+        
+        <!-- Elements for rain theme -->
+        <!-- Clouds, raindrops and puddles will be generated by JS -->
+    </div>
+    
+    <!-- Theme toggle button -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>HTML/CSS Scraper</h1>
+            <p>Ekstrak konten HTML dan CSS dari website apapun dengan mudah</p>
+        </header>
+        
+        <section class="scraper-form">
+            <div class="input-group">
+                <input type="url" id="websiteUrl" placeholder="Masukkan URL website (contoh: https://example.com)" required>
+            </div>
+            <button class="btn btn-start" id="startScraping">
+                <i class="fas fa-play"></i> Mulai Scraping
+            </button>
+        </section>
+        
+        <section class="output-section">
+            <div class="output-header">
+                <h2>Hasil Scraping</h2>
+                <div class="output-actions">
+                    <button class="btn" id="copyOutput">
+                        <i class="fas fa-copy"></i> Salin
+                    </button>
+                    <button class="btn" id="downloadOutput">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn" id="clearOutput">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </div>
+            </div>
+            <div class="output-content" id="scrapingOutput">
+                {/* Hasil scraping akan muncul di sini */}
+            </div>
+        </section>
+        
+        <section class="profile-section">
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF">
+                </div>
+                <div class="profile-info">
+                    <h2>NerooXF</h2>
+                    <p>Basic Developer</p>
+                </div>
+            </div>
+            <div class="contact-info">
+                <a href="https://wa.me/6282118471887" class="contact-item" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp: +62 821-1847-1887</span>
+                </a>
+                <a href="https://t.me/nerooXF" class="contact-item" target="_blank">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram: @nerooXF</span>
+                </a>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Current theme state
+        let currentTheme = 0;
+        const themes = ['night', 'sunset', 'rain'];
+        const themeIcons = ['fa-moon', 'fa-sun', 'fa-cloud-rain'];
+        
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const body = document.body;
+        const backgroundAnimation = document.querySelector('.background-animation');
+        
+        // Initialize background elements
+        function initBackgroundElements() {
+            // Create stars for night theme
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                backgroundAnimation.appendChild(star);
+            }
+            
+            // Create leaves for sunset theme
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                leaf.style.left = `${Math.random() * 100}%`;
+                leaf.style.animationDelay = `${Math.random() * 5}s`;
+                leaf.style.opacity = `${Math.random() * 0.5 + 0.5}`;
+                backgroundAnimation.appendChild(leaf);
+            }
+            
+            // Create clouds for rain theme
+            for (let i = 0; i < 5; i++) {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                cloud.style.width = `${Math.random() * 150 + 50}px`;
+                cloud.style.height = `${Math.random() * 60 + 30}px`;
+                cloud.style.top = `${Math.random() * 30 + 10}%`;
+                cloud.style.animationDelay = `${Math.random() * 10}s`;
+                backgroundAnimation.appendChild(cloud);
+            }
+            
+            // Create raindrops for rain theme
+            for (let i = 0; i < 100; i++) {
+                const raindrop = document.createElement('div');
+                raindrop.classList.add('raindrop');
+                raindrop.style.left = `${Math.random() * 100}%`;
+                raindrop.style.height = `${Math.random() * 20 + 10}px`;
+                raindrop.style.animationDelay = `${Math.random() * 2}s`;
+                backgroundAnimation.appendChild(raindrop);
+            }
+            
+            // Create puddles for rain theme
+            for (let i = 0; i < 5; i++) {
+                const puddle = document.createElement('div');
+                puddle.classList.add('puddle');
+                puddle.style.left = `${Math.random() * 80 + 10}%`;
+                puddle.style.animationDelay = `${Math.random() * 3}s`;
+                backgroundAnimation.appendChild(puddle);
+            }
+        }
+        
+        // Change theme function
+        function changeTheme() {
+            // Remove previous theme classes
+            themes.forEach(theme => {
+                body.classList.remove(`theme-${theme}`);
+            });
+            
+            // Increment theme index
+            currentTheme = (currentTheme + 1) % themes.length;
+            
+            // Apply new theme
+            body.classList.add(`theme-${themes[currentTheme]}`);
+            
+            // Update theme icon
+            themeIcon.className = `fas ${themeIcons[currentTheme]}`;
+            
+            // Save theme preference
+            localStorage.setItem('theme', currentTheme);
+        }
+        
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme !== null) {
+                currentTheme = parseInt(savedTheme);
+                themes.forEach(theme => {
+                    body.classList.remove(`theme-${theme}`);
+                });
+                body.classList.add(`theme-${themes[currentTheme]}`);
+                themeIcon.className = `fas ${themeIcons[currentTheme]}`;
+            }
+        }
+        
+        // Scraping functions
+        function startScraping() {
+            const urlInput = document.getElementById('websiteUrl');
+            const output = document.getElementById('scrapingOutput');
+            
+            if (!urlInput.value) {
+                alert('Silakan masukkan URL website terlebih dahulu');
+                urlInput.focus();
+                return;
+            }
+            
+            // Simulate scraping process
+            output.textContent = 'Memulai proses scraping...';
+            
+            setTimeout(() => {
+                // This is a simulation - actual scraping would require a backend
+                output.textContent = `Hasil scraping dari: ${urlInput.value}\n\n`
+                    + 'HTML:\n'
+                    + '<!DOCTYPE html>\n<html>\n<head>\n  <title>Contoh Website</title>\n</head>\n<body>\n'
+                    + '  <h1>Halo, Scraper!</h1>\n  <p>Ini adalah contoh hasil scraping.</p>\n'
+                    + '</body>\n</html>\n\n'
+                    + 'CSS:\n'
+                    + 'body { font-family: Arial, sans-serif; margin: 20px; }\n'
+                    + 'h1 { color: #4361ee; }\n'
+                    + 'p { color: #333; line-height: 1.6; }';
+            }, 1500);
+        }
+        
+        function copyOutput() {
+            const output = document.getElementById('scrapingOutput');
+            const textarea = document.createElement('textarea');
+            textarea.value = output.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            // Show feedback
+            const btn = document.getElementById('copyOutput');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        }
+        
+        function downloadOutput() {
+            const output = document.getElementById('scrapingOutput');
+            const blob = new Blob([output.textContent], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hasil-scraping.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function clearOutput() {
+            document.getElementById('scrapingOutput').textContent = '';
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize background elements
+            initBackgroundElements();
+            
+            // Load saved theme
+            loadTheme();
+            
+            // Add event listeners
+            themeToggle.addEventListener('click', changeTheme);
+            document.getElementById('startScraping').addEventListener('click', startScraping);
+            document.getElementById('copyOutput').addEventListener('click', copyOutput);
+            document.getElementById('downloadOutput').addEventListener('click', downloadOutput);
+            document.getElementById('clearOutput').addEventListener('click', clearOutput);
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
