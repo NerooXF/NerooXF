@@ -13,34 +13,44 @@
             --card-bg: rgba(255, 255, 255, 0.85);
             --text: #2c3e50;
             --shadow: rgba(0, 0, 0, 0.1);
-            --theme-icon: '\f185'; /* Sun icon */
+            --theme-icon: url('https://files.catbox.moe/9z8a1i.png');
         }
 
-        .theme-night {
+        .theme-rain {
+            --primary: #3498db;
+            --secondary: #4db6ac;
+            --bg: linear-gradient(135deg, #0d47a1, #1976d2);
+            --card-bg: rgba(25, 35, 55, 0.85);
+            --text: #e3f2fd;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --theme-icon: url('https://files.catbox.moe/9z8a1i.png');
+        }
+
+        .theme-aurora {
             --primary: #8e44ad;
             --secondary: #3498db;
             --bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            --card-bg: rgba(25, 30, 45, 0.9);
+            --card-bg: rgba(15, 25, 40, 0.85);
             --text: #ecf0f1;
-            --shadow: rgba(0, 0, 0, 0.3);
-            --theme-icon: '\f186'; /* Moon icon */
+            --shadow: rgba(0, 0, 0, 0.4);
+            --theme-icon: url('https://files.catbox.moe/4c5x9v.png');
         }
 
-        .theme-sunset {
+        .theme-autumn {
             --primary: #e74c3c;
             --secondary: #f39c12;
             --bg: linear-gradient(135deg, #ff7e5f, #feb47b);
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(245, 235, 220, 0.85);
             --text: #2c3e50;
             --shadow: rgba(0, 0, 0, 0.2);
-            --theme-icon: '\f763'; /* Sunset icon */
+            --theme-icon: url('https://files.catbox.moe/0q7x1o.png');
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background 0.5s ease, color 0.3s ease;
+            transition: background 0.8s ease, color 0.5s ease, transform 0.3s ease;
         }
 
         body {
@@ -48,33 +58,115 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            padding-bottom: 50px;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+
+        /* Animasi Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Animasi Hujan */
+        .rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
+            animation: rain 1.5s linear infinite;
+        }
+
+        @keyframes rain {
+            0% { transform: translateY(-20px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Animasi Aurora */
+        .aurora {
+            position: absolute;
+            height: 200px;
+            width: 300%;
+            left: -100%;
+            top: 0;
+            background: linear-gradient(90deg, 
+                rgba(46, 204, 113, 0.1),
+                rgba(52, 152, 219, 0.2),
+                rgba(155, 89, 182, 0.3),
+                rgba(52, 152, 219, 0.2),
+                rgba(46, 204, 113, 0.1)
+            );
+            animation: aurora-flow 20s linear infinite;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        @keyframes aurora-flow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .moon {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f1c40f;
+            top: 15%;
+            right: 15%;
+            box-shadow: 0 0 40px #f1c40f;
+        }
+
+        /* Animasi Daun */
+        .leaf {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: leaf-fall linear infinite;
+        }
+
+        @keyframes leaf-fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
         .theme-toggle {
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: var(--card-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px var(--shadow);
+            box-shadow: 0 4px 20px var(--shadow);
             z-index: 100;
             border: 2px solid var(--primary);
+            overflow: hidden;
         }
 
-        .theme-toggle::before {
-            content: var(--theme-icon);
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 20px;
-            color: var(--primary);
+        .theme-icon {
+            width: 40px;
+            height: 40px;
+            background-image: var(--theme-icon);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .container {
@@ -85,7 +177,8 @@
 
         header {
             text-align: center;
-            padding: 80px 20px 40px;
+            padding: 100px 20px 40px;
+            position: relative;
         }
 
         .profile-pic {
@@ -143,23 +236,47 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
+        .skills-container {
             margin: 30px 0;
         }
 
-        .skill-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px 25px;
-            border-radius: 15px;
+        .skill-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .skill-name {
+            width: 120px;
             font-weight: 600;
-            box-shadow: 0 5px 15px var(--shadow);
-            min-width: 150px;
-            text-align: center;
+        }
+
+        .skill-bar-container {
+            flex: 1;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .skill-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            position: relative;
+            transition: width 1.5s ease-out;
+        }
+
+        .skill-percent {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .quote {
@@ -201,7 +318,7 @@
 
         .products, .tools {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
             margin: 40px 0;
         }
@@ -213,21 +330,37 @@
             box-shadow: 0 10px 30px var(--shadow);
             transition: transform 0.3s;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .card-img-container {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 3px solid var(--primary);
         }
 
         .card-img {
             width: 100%;
-            height: 200px;
+            height: 100%;
             object-fit: cover;
-            border-bottom: 3px solid var(--primary);
+            transition: transform 0.5s;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
         }
 
         .card-content {
             padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-title {
@@ -239,6 +372,7 @@
         .card-desc {
             margin-bottom: 20px;
             color: var(--text);
+            flex: 1;
         }
 
         .card-tech {
@@ -254,6 +388,25 @@
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.85rem;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .tools .card {
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+        }
+
+        .tools .card-content {
+            padding: 20px;
+        }
+
+        .tools .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .tools .card-desc {
+            font-size: 0.95rem;
         }
 
         .contact-section {
@@ -336,11 +489,27 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .theme-icon {
+                width: 30px;
+                height: 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="theme-toggle" id="themeToggle"></div>
+    <div class="background-animation" id="backgroundAnimation"></div>
+    
+    <div class="theme-toggle" id="themeToggle">
+        <div class="theme-icon"></div>
+    </div>
     
     <div class="container">
         <header>
@@ -349,6 +518,9 @@
             <p class="tagline">Full Stack Developer & Creative Problem Solver</p>
             
             <div class="nav-links">
+                <a href="#skills" class="nav-btn">
+                    <i class="fas fa-code"></i> Skills
+                </a>
                 <a href="#products" class="nav-btn">
                     <i class="fas fa-box-open"></i> Produk
                 </a>
@@ -365,13 +537,60 @@
             <h2 class="section-title">Tentang Saya</h2>
             <p>Halo! Saya NerooXF, seorang pengembang perangkat lunak dengan passion untuk menciptakan solusi inovatif dan aplikasi yang memudahkan kehidupan. Dengan lebih dari 5 tahun pengalaman di bidang pengembangan web dan aplikasi, saya terus mengeksplorasi teknologi baru untuk meningkatkan keterampilan saya.</p>
             
-            <div class="skills">
-                <div class="skill-card">JavaScript|80%</div>
-                <div class="skill-card">React.js|20%</div>
-                <div class="skill-card">Node.js|30%</div>
-                <div class="skill-card">Python|50%</div>
-                <div class="skill-card">UI/UX Design|25%</div>
-                <div class="skill-card">Database|50%</div>
+            <div id="skills" class="skills-container">
+                <div class="skill-row">
+                    <div class="skill-name">JavaScript</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 95%">
+                            <span class="skill-percent">95%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-row">
+                    <div class="skill-name">React.js</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 90%">
+                            <span class="skill-percent">90%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-row">
+                    <div class="skill-name">Node.js</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 88%">
+                            <span class="skill-percent">88%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-row">
+                    <div class="skill-name">Python</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 85%">
+                            <span class="skill-percent">85%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-row">
+                    <div class="skill-name">UI/UX Design</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 80%">
+                            <span class="skill-percent">80%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-row">
+                    <div class="skill-name">Database</div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" style="width: 92%">
+                            <span class="skill-percent">92%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <p class="quote">"Kode yang baik itu seperti puisi; mengubah kompleksitas menjadi keanggunan yang sederhana."</p>
@@ -383,7 +602,9 @@
             <h2 class="section-title">Produk Saya</h2>
             <div class="products">
                 <div class="card">
-                    <img src="https://files.catbox.moe/0f9wj0.png" alt="FinTrack Pro" class="card-img">
+                    <div class="card-img-container">
+                        <img src="https://files.catbox.moe/0f9wj0.png" alt="FinTrack Pro" class="card-img">
+                    </div>
                     <div class="card-content">
                         <h3 class="card-title">FinTrack Pro</h3>
                         <p class="card-desc">Aplikasi manajemen keuangan pribadi dengan analitik prediktif dan pelacakan pengeluaran otomatis. Membantu pengguna mengelola anggaran dan merencanakan masa depan finansial.</p>
@@ -396,7 +617,9 @@
                 </div>
                 
                 <div class="card">
-                    <img src="https://files.catbox.moe/5b8zns.png" alt="TaskFlow" class="card-img">
+                    <div class="card-img-container">
+                        <img src="https://files.catbox.moe/5b8zns.png" alt="TaskFlow" class="card-img">
+                    </div>
                     <div class="card-content">
                         <h3 class="card-title">TaskFlow</h3>
                         <p class="card-desc">Platform kolaborasi tugas dengan manajemen proyek, pelacakan waktu, dan integrasi alat pengembang. Meningkatkan produktivitas tim hingga 40%.</p>
@@ -409,7 +632,9 @@
                 </div>
                 
                 <div class="card">
-                    <img src="https://files.catbox.moe/8d9u1c.png" alt="HealthGuard" class="card-img">
+                    <div class="card-img-container">
+                        <img src="https://files.catbox.moe/8d9u1c.png" alt="HealthGuard" class="card-img">
+                    </div>
                     <div class="card-content">
                         <h3 class="card-title">HealthGuard</h3>
                         <p class="card-desc">Sistem pemantauan kesehatan dengan integrasi wearable device, analisis pola tidur, dan rekomendasi kebugaran personal.</p>
@@ -427,7 +652,6 @@
             <h2 class="section-title">Tools Buatan Saya</h2>
             <div class="tools">
                 <div class="card">
-                    <img src="https://files.catbox.moe/0n9z8k.png" alt="CodeOptimizer" class="card-img">
                     <div class="card-content">
                         <h3 class="card-title">CodeOptimizer</h3>
                         <p class="card-desc">Alat analisis kode otomatis yang mengidentifikasi bottleneck kinerja dan memberikan saran optimasi untuk JavaScript, Python, dan Java.</p>
@@ -440,7 +664,6 @@
                 </div>
                 
                 <div class="card">
-                    <img src="https://files.catbox.moe/0q7x1o.png" alt="DesignPalette" class="card-img">
                     <div class="card-content">
                         <h3 class="card-title">DesignPalette</h3>
                         <p class="card-desc">Generator palet warna berbasis AI yang menciptakan kombinasi warna harmonis dengan aksesibilitas penuh untuk desainer web.</p>
@@ -453,7 +676,6 @@
                 </div>
                 
                 <div class="card">
-                    <img src="https://files.catbox.moe/3g8x1b.png" alt="API Sentinel" class="card-img">
                     <div class="card-content">
                         <h3 class="card-title">API Sentinel</h3>
                         <p class="card-desc">Monitor kesehatan API dengan deteksi anomali, pelacakan performa real-time, dan sistem peringatan otomatis untuk tim pengembang.</p>
@@ -483,20 +705,85 @@
         </section>
         
         <footer>
-            <p>© 2025 NerooXF. All rights reserved. | Dibuat dengan ❤️ dan ☕</p>
+            <p>© 2023 NerooXF. All rights reserved. | Dibuat dengan ❤️ dan ☕</p>
         </footer>
     </div>
 
     <script>
         const themeToggle = document.getElementById('themeToggle');
+        const backgroundAnimation = document.getElementById('backgroundAnimation');
         const body = document.body;
         let currentTheme = 0;
-        const themes = ['default', 'theme-night', 'theme-sunset'];
+        const themes = ['theme-rain', 'theme-aurora', 'theme-autumn'];
         
-        themeToggle.addEventListener('click', () => {
+        // Fungsi untuk membuat animasi hujan
+        function createRain() {
+            backgroundAnimation.innerHTML = '';
+            for (let i = 0; i < 80; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('rain-drop');
+                drop.style.left = `${Math.random() * 100}%`;
+                drop.style.animationDelay = `${Math.random() * 2}s`;
+                drop.style.animationDuration = `${0.5 + Math.random() * 1}s`;
+                backgroundAnimation.appendChild(drop);
+            }
+        }
+        
+        // Fungsi untuk membuat animasi aurora
+        function createAurora() {
+            backgroundAnimation.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const auroraLayer = document.createElement('div');
+                auroraLayer.classList.add('aurora');
+                auroraLayer.style.top = `${i * 60}px`;
+                auroraLayer.style.animationDuration = `${15 + i * 5}s`;
+                backgroundAnimation.appendChild(auroraLayer);
+            }
+            
+            const moon = document.createElement('div');
+            moon.classList.add('moon');
+            backgroundAnimation.appendChild(moon);
+        }
+        
+        // Fungsi untuk membuat animasi daun
+        function createAutumn() {
+            backgroundAnimation.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                leaf.style.backgroundImage = "url('https://files.catbox.moe/0q7x1o.png')";
+                leaf.style.width = `${20 + Math.random() * 30}px`;
+                leaf.style.height = `${20 + Math.random() * 30}px`;
+                leaf.style.left = `${Math.random() * 100}%`;
+                leaf.style.animationDelay = `${Math.random() * 5}s`;
+                leaf.style.animationDuration = `${8 + Math.random() * 7}s`;
+                backgroundAnimation.appendChild(leaf);
+            }
+        }
+        
+        // Fungsi untuk mengubah tema
+        function changeTheme() {
             currentTheme = (currentTheme + 1) % themes.length;
             body.className = themes[currentTheme];
-        });
+            
+            // Hapus animasi yang ada
+            backgroundAnimation.innerHTML = '';
+            
+            // Tambahkan animasi sesuai tema
+            if (themes[currentTheme] === 'theme-rain') {
+                createRain();
+            } else if (themes[currentTheme] === 'theme-aurora') {
+                createAurora();
+            } else if (themes[currentTheme] === 'theme-autumn') {
+                createAutumn();
+            }
+        }
+        
+        // Inisialisasi tema pertama
+        changeTheme();
+        
+        // Event listener untuk tombol tema
+        themeToggle.addEventListener('click', changeTheme);
         
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
