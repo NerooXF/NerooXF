@@ -428,57 +428,64 @@
             font-size: 1.1rem;
         }
         
-        /* Profil section - Diperbaiki */
+        /* Profil section - Diperbaiki dan ditingkatkan */
         .profile-section {
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow-lg);
             position: relative;
             margin-top: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         
         .profile-banner {
-            height: 180px;
+            height: 200px;
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             position: relative;
             display: flex;
             justify-content: center;
-            border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+            align-items: flex-end;
+            padding-bottom: 70px;
         }
         
         .profile-pic-container {
             position: absolute;
-            bottom: -70px;
+            bottom: -80px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 20;
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             border-radius: var(--radius-full);
             overflow: hidden;
             border: 4px solid rgba(255, 255, 255, 0.3);
             box-shadow: var(--shadow);
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .profile-pic {
-            width: 100%;
-            height: 100%;
+            width: 150px;
+            height: 150px;
+            border-radius: var(--radius-full);
             object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .profile-content {
-            padding: 90px 30px 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            padding: 100px 30px 30px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         
         .profile-info h2 {
             font-size: 1.8rem;
             margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .profile-info p {
@@ -492,13 +499,14 @@
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
         
         .contact-btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 25px;
+            padding: 15px 30px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: var(--radius-sm);
             transition: var(--transition);
@@ -506,16 +514,35 @@
             color: inherit;
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-weight: 500;
+            box-shadow: var(--shadow);
+            min-width: 200px;
+            justify-content: center;
         }
         
         .contact-btn:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-lg);
         }
         
         .contact-btn i {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+        }
+        
+        .contact-btn.whatsapp {
+            background: rgba(37, 211, 102, 0.2);
+        }
+        
+        .contact-btn.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.3);
+        }
+        
+        .contact-btn.telegram {
+            background: rgba(0, 136, 204, 0.2);
+        }
+        
+        .contact-btn.telegram:hover {
+            background: rgba(0, 136, 204, 0.3);
         }
         
         /* Responsif */
@@ -545,17 +572,26 @@
             }
             
             .profile-banner {
-                height: 150px;
+                height: 180px;
             }
             
             .profile-pic-container {
-                width: 120px;
-                height: 120px;
-                bottom: -60px;
+                width: 140px;
+                height: 140px;
+                bottom: -70px;
+            }
+            
+            .profile-pic {
+                width: 130px;
+                height: 130px;
             }
             
             .profile-content {
-                padding-top: 70px;
+                padding-top: 80px;
+            }
+            
+            .contact-btn {
+                min-width: 100%;
             }
         }
     </style>
@@ -622,21 +658,23 @@
         </section>
         
         <section class="profile-section">
-            <div class="profile-banner"></div>
-            <div class="profile-pic-container">
-                <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF" class="profile-pic">
+            <div class="profile-banner">
+                <div class="profile-pic-container">
+                    <img src="https://files.catbox.moe/ioc121.jpg" alt="NerooXF" class="profile-pic">
+                </div>
             </div>
             <div class="profile-content">
                 <div class="profile-info">
                     <h2>NerooXF</h2>
                     <p>Basic Developer</p>
                 </div>
+                
                 <div class="contact-info">
-                    <a href="https://wa.me/6282118471887" class="contact-btn" target="_blank">
+                    <a href="https://wa.me/6282118471887" class="contact-btn whatsapp" target="_blank">
                         <i class="fab fa-whatsapp"></i>
                         <span>WhatsApp</span>
                     </a>
-                    <a href="https://t.me/nerooXF" class="contact-btn" target="_blank">
+                    <a href="https://t.me/nerooXF" class="contact-btn telegram" target="_blank">
                         <i class="fab fa-telegram"></i>
                         <span>Telegram</span>
                     </a>
